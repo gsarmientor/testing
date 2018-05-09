@@ -1,0 +1,1 @@
+ANSIBLE_ARGS='--extra-vars "inst_path=url to installer"' vagrant up

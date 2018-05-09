@@ -1,0 +1,36 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+#!/bin/bash 
+ 
+ifconfig eth1 10.200.73.231 netmask 255.255.255.0 up
+route add default gw 10.200.73.1 eth1
+SCRIPT
+
+Vagrant.configure(2) do |config|
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 8192
+    v.cpus = 2
+  end
+
+  config.vm.box = "bento/ubuntu-16.04"
+
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  config.vm.hostname = "continuum"
+
+  config.vm.network :public_network, :bridge => "br0", :auto_config => "false"
+
+  config.vm.provision "shell",
+    run: "always",
+    inline: $script
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "continuum.yml"
+    ansible.inventory_path = "/etc/ansible/hosts"
+    ansible.limit = "all"
+  end
+
+end

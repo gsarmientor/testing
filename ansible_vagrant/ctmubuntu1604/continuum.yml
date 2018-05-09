@@ -1,0 +1,52 @@
+---
+- hosts: continuum
+  become: yes
+  tasks:
+  - name: add continuum
+    user:
+      name: "continuum"
+      password: "$6$jMXmxPBfdjNaUH7e$ooU33JraYZd1FYtechqYb/IIECtpNA/u0YAwqm3n6KxPUkki5yXPDoufGrQSE7Hewd1KYfyAXexiqD/xuHY4B0"
+      state: present
+
+  - name: add continuum to sudoers
+    lineinfile:
+      path: /etc/sudoers
+      line: "continuum ALL=(ALL) NOPASSWD: ALL"
+      state: present
+      insertafter: EOF
+
+  - name: Set up use of arrows keys
+    shell: sudo chsh -s /bin/bash continuum
+
+  - name: Import public key - mongodb
+    shell: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+
+  - name: creating list file for mongodb
+    shell: echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+
+  - name:  Reload local package DB - mongo
+    shell: apt-get update
+
+  - name: Install mongodb packages
+    shell: apt-get install -y mongodb-org
+
+  - name: Starting mongodb
+    shell: service mongod start
+
+#  - name: Downloading Continuum Installer Latest Version
+#    get_url:
+#      url: https://s3.amazonaws.com/versionone-downloads/continuum/continuum-latest-installer.sh
+#      dest: /tmp/continuum-installer.sh
+#      owner: continuum
+#      group: continuum
+#      mode: 0770
+
+#  - name: Installing Continuum
+#    become_user: continuum
+#    shell: /tmp/continuum-installer.sh -s
+
+ # - name: Logout
+ #   ssh-reconnect: all=True
+
+#  - name: Starting Continuum Services
+#    shell: sudo -iu continuum ctm-start-services

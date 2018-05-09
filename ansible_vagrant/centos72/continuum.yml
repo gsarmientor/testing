@@ -1,0 +1,58 @@
+---
+- hosts: centos72
+  become: yes
+  vars:
+    installer: "{{ inst_path }}" 
+  tasks:
+  - name: add continuum
+    user:
+      name: "continuum"
+      password: "$6$jMXmxPBfdjNaUH7e$ooU33JraYZd1FYtechqYb/IIECtpNA/u0YAwqm3n6KxPUkki5yXPDoufGrQSE7Hewd1KYfyAXexiqD/xuHY4B0"
+      state: present
+
+  - name: add continuum to sudoers
+    lineinfile:
+      path: /etc/sudoers
+      line: "continuum ALL=(ALL) NOPASSWD: ALL"
+      state: present
+      insertafter: EOF
+
+  - name: Set up use of arrows keys
+    shell: sudo chsh -s /bin/bash continuum
+
+  - copy:
+      src: /home/stbuilder/vagrant/ctmcentos72/mongodb-org.repo
+      dest: /etc/yum.repos.d
+
+  - copy:
+      src: /home/stbuilder/vagrant/dbbkp/smalldb/backup.tar.gz
+      dest: /home/continuum
+
+  - name:  Install - mongodb
+    shell: yum install -y mongodb-org
+
+  - name: Starting mongodb
+    shell: systemctl start mongod
+
+  - name: Downloading Continuum Installer Latest Version
+    get_url:
+      url: "{{ installer }}"
+      dest: /tmp/continuum-installer.sh
+      owner: continuum
+      group: continuum
+      mode: 0770
+
+  - name: Installing Continuum
+    become_user: continuum
+    shell: /tmp/continuum-installer.sh -s
+
+  - name: unpack DB for E2E
+    become_user: continuum
+    shell: tar -xzf backup.tar.gz
+
+  - name: restoring DB for E2E
+    become_user: continuum
+    shell: mongorestore --drop --db continuum /home/continuum/backup/continuum_mongo/continuum
+
+  - name: Starting Continuum Services
+    shell: sudo -iu continuum ctm-start-services

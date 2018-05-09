@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+#!/bin/bash 
+ 
+! grep -q GATEWAY /etc/sysconfig/network && echo "GATEWAY=10.200.73.1" >> /etc/sysconfig/network
+! grep -q GATEWAYDEV /etc/sysconfig/network && echo "GATEWAYDEV=enp0s8" >> /etc/sysconfig/network
+
+echo "10.200.73.238   centos72" >> /etc/hosts
+
+systemctl restart network
+
+SCRIPT
+
+Vagrant.configure(2) do |config|
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 8192
+    v.cpus = 2
+  end
+
+  config.vm.box = "bento/centos-7.2"
+
+  config.ssh.insert_key = false
+
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  config.vm.hostname = "centos72"
+
+  config.vm.network :public_network, :ip => "10.200.73.238", :bridge => "br0"
+
+  config.vm.provision "shell",
+    inline: $script
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "continuum.yml"
+    ansible.raw_arguments = Shellwords.shellsplit(ENV['ANSIBLE_ARGS']) if ENV['ANSIBLE_ARGS']
+    ansible.inventory_path = "/etc/ansible/hosts"
+    ansible.limit = "all"
+  end
+
+end

@@ -1,0 +1,106 @@
+---
+- hosts: e2ectm
+  become: yes
+  tasks:
+
+  - name: creating user stbuilder
+    user:
+      name: "stbuilder"
+      password: "$6$rounds=656000$vW5GWeJj6ZM6bpV0$l5KaRecV7tKWZV1kVdQlEEMr.7GEWhYHw9Ic0RH3GH7Wfwe5Ktscd6FE0ZlGytK3DL3jYuqxO4m5Ku2AGRcF6/"
+      state: present
+
+  - name: add stbuilder to sudoers
+    lineinfile:
+      path: /etc/sudoers
+      line: "%stbuilder    ALL=(ALL)       NOPASSWD: ALL"
+      state: present
+      insertafter: EOF
+
+  - copy:
+      src: id_rsa
+      dest: /home/stbuilder/.ssh/
+      owner: stbuilder
+      group: stbuilder
+      mode: 0600
+
+  - copy:
+      src: id_rsa.pub
+      dest: /home/stbuilder/.ssh/
+      owner: stbuilder
+      group: stbuilder
+      mode: 0600
+
+  - copy:
+      src: config
+      dest: /home/stbuilder/.ssh/
+      owner: stbuilder
+      group: stbuilder
+      mode: 0600
+
+  - name: install java 9
+    unarchive:
+      src: jdk-9.0.4_linux-x64_bin.tar.gz
+      dest: /usr/local
+
+  - name: Add java to PATH
+    lineinfile: 
+      path: /home/stbuilder/.bash_profile
+      regexp: 'PATH=$PATH:$HOME/.local/bin:$HOME/bin'
+      line: 'PATH=$PATH:$HOME/.local/bin:$HOME/bin:/usr/local/jdk-9.0.4/bin'
+
+  - name: Installing EPEL release
+    yum:
+      name: epel-release
+      state: latest
+
+  - name: Install git
+    yum:
+      name: git
+      state: latest
+
+  - copy:
+      src: google-chrome.repo
+      dest: /etc/yum.repos.d/
+      owner: root
+      group: root
+      
+  - name: Install Chrome
+    yum:
+      name: google-chrome-stable
+      state: latest
+
+  - name: Install package 
+    yum:
+      name: PackageKit-gtk3-module
+      state: latest
+
+  - name: Install liberation (font issue fix for chrome)
+    yum: 
+      name: liberation-*
+      state: latest
+
+  - name: Insert a Display var
+    lineinfile:
+      path: /etc/environment
+      line: DISPLAY=10.200.73.230:1
+      insertbefore: EOF
+
+  - name: Install nodejs
+    yum:
+      name: nodejs
+      state: latest
+
+  - name: Install npm
+    yum:
+      name: npm
+      state: latest
+
+  - name: Install protractor
+    npm:
+      name: protractor
+      global: yes
+
+  - name: install webdriver manager
+    npm:
+      name: webdriver-manager
+      global: yes

@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"continuum.legato.project_status_log"},{"v":2,"key":{"date2":1},"name":"date2_1","ns":"continuum.legato.project_status_log"}]}

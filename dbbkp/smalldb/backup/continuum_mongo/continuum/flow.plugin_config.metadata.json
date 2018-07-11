@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"continuum.flow.plugin_config"},{"v":2,"unique":true,"key":{"_plugin":1},"name":"_plugin_1","ns":"continuum.flow.plugin_config"}]}

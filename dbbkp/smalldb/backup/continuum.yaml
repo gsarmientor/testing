@@ -1,0 +1,48 @@
+#########################################################################
+# Copyright 2016 VersionOne
+# All Rights Reserved.
+# http://www.versionone.com
+#########################################################################
+
+#
+# This file can be used on each Continuum server, to both provide initial
+# configuration values as well as override any values for local requirements.
+#
+# Most settings in Continuum can be changed in the Administrative UI, therefore changes here
+# are only necessary for host specific customizations.
+#
+# See https://community.versionone.com/VersionOne_Continuum/Administration/General_Settings/Configuration_Reference
+
+# All Continuum settings have defaults built-in.  The only value
+# absolutely required in this file is the encryption 'key'.
+#
+# (This key is configured during the install process.)
+#
+
+# The following values are configured by the installation script.
+
+####### Encryption Key
+# NOTE: do not change this setting manually, it must be set by the install script.
+# Contact support@versionone.com if you need to change your encryption key on
+#     an existing installation.
+
+####### MySql Details
+# user, password are set by the install script.
+# If the actual database settings change, these values must be changed to match.
+# (Passwords must be encrypted.)
+
+####### MongoDB
+# default mongo server of 127.0.0.1 will listen on localhost only
+# the default Continuum install uses an unauthenticated mongodb install
+# if the mongodb.user setting is blank, connections will be made
+# without authentication
+# Passwords must be encrypted.
+
+---
+system:
+  key: GzyRvxUiIbT02C68uzRlEg==
+  mongodb_database: continuum
+  uicache: /var/continuum/ui
+  tmpdir: /var/continuum/tmp
+  logfiles: /var/continuum/log
+

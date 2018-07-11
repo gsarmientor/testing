@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"continuum.canvas.resource"},{"v":2,"unique":true,"key":{"project":1,"component":1,"name":1},"name":"project_1_component_1_name_1","ns":"continuum.canvas.resource"}]}

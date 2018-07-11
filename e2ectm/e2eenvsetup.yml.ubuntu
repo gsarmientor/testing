@@ -1,0 +1,38 @@
+---
+- hosts: ctme2evm
+  become: yes
+  tasks:
+  - name: updating apt
+    apt:
+      update_cache: yes
+
+  - name: install java 9
+    unarchive:
+      src: jdk-9.0.4_linux-x64_bin.tar.gz
+      dest: /usr/local
+
+  - name: Install nodejs
+    apt:
+      name: nodejs
+      state: latest
+
+  - name: Install npm
+    apt:
+      name: npm
+      state: latest
+
+  - name: Install protractor
+    npm:
+      name: protractor
+      global: yes
+
+#  - name: create node link
+#    file:
+#      src: /usr/bin/nodejs
+#      dest: /usr/bin/node
+#      state: link
+
+  - name: install webdriver manager
+    npm:
+      name: webdriver-manager
+      global: yes

@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"continuum.webhookpublisher_activity"},{"v":2,"key":{"publisher":1},"name":"publisher_1","ns":"continuum.webhookpublisher_activity"},{"v":2,"key":{"handler":1},"name":"handler_1","ns":"continuum.webhookpublisher_activity"}]}

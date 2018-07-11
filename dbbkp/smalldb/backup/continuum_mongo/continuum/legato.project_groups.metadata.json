@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"continuum.legato.project_groups"},{"v":2,"unique":true,"key":{"project_id":1,"group":1},"name":"project_id_1_group_1","ns":"continuum.legato.project_groups"}]}

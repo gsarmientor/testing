@@ -36,7 +36,7 @@
 
   - name: Downloading Continuum Installer Latest Version
     get_url:
-      url: https://s3.amazonaws.com/versionone-downloads/continuum/continuum-latest-installer.sh
+      url: "{{ installer }}"
       dest: /tmp/continuum-installer.sh
       owner: continuum
       group: continuum
@@ -56,24 +56,5 @@
 
   - name: Restarting services
     environment: 
-      CONTINUUM_HOME: /opt/continuum/current
-    command: sudo -iu continuum ctm-restart-services
-
-  - name: Downloading Continuum Installer Latest Version
-    get_url:
-      url: "{{ installer }}"
-      dest: /tmp/continuum-installer-new.sh
-      owner: continuum
-      group: continuum
-      mode: 0770
-
-  - name: Installing Continuum
-    become_user: continuum
-    environment:
-      CONTINUUM_HOME: /opt/continuum/current
-    shell: /tmp/continuum-installer-new.sh -s
-
-  - name: Restarting services
-    environment:
       CONTINUUM_HOME: /opt/continuum/current
     command: sudo -iu continuum ctm-restart-services

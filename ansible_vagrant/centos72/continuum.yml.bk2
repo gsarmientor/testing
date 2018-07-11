@@ -2,7 +2,11 @@
 - hosts: centos72
   become: yes
   vars:
-    installer: "{{ inst_path }}" 
+    installer: "{{ inst_path }}"
+
+  environment:
+    CONTINUUM_HOME: /opt/continuum/current 
+
   tasks:
   - name: add continuum
     user:
@@ -36,7 +40,7 @@
 
   - name: Downloading Continuum Installer Latest Version
     get_url:
-      url: https://s3.amazonaws.com/versionone-downloads/continuum/continuum-latest-installer.sh
+      url: https://s3.amazonaws.com/versionone-builds/continuum/installer/continuum-18.1.4.223-development-installer.sh
       dest: /tmp/continuum-installer.sh
       owner: continuum
       group: continuum
@@ -62,18 +66,11 @@
   - name: Downloading Continuum Installer Latest Version
     get_url:
       url: "{{ installer }}"
-      dest: /tmp/continuum-installer-new.sh
+      dest: /tmp/continuum-installer-new.sh      
       owner: continuum
       group: continuum
       mode: 0770
 
   - name: Installing Continuum
     become_user: continuum
-    environment:
-      CONTINUUM_HOME: /opt/continuum/current
     shell: /tmp/continuum-installer-new.sh -s
-
-  - name: Restarting services
-    environment:
-      CONTINUUM_HOME: /opt/continuum/current
-    command: sudo -iu continuum ctm-restart-services
